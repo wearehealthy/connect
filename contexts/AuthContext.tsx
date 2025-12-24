@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { Loader2 } from 'lucide-react';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -59,9 +60,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex flex-col justify-center items-center bg-slate-50">
+        <Loader2 className="w-12 h-12 text-rose-500 animate-spin mb-4" />
+        <p className="text-slate-500 font-serif animate-pulse">Connecting to Community...</p>
+      </div>
+    );
+  }
+
   return (
     <AuthContext.Provider value={{ currentUser, userRole, loading, logout }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
